@@ -5,7 +5,7 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="list"
+        android:label="list:list2"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -17,6 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".AppStatus"></activity>
+        <activity android:name=".AppMain"></activity>
+        <activity android:name=".AppLog"></activity>
     </application>
 
 </manifest>

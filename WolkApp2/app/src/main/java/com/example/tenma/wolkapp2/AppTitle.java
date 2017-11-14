@@ -9,29 +9,49 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.support.v7.app.AppCompatActivity;
 
-public class AppTitle extends AppCompatActivity {
+public class AppTitle extends ActivityAddToBGMandSE {
+    MediaPlayer bgm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_title);
 
-        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.title_bgm);
-        MediaPlayer bgm = MediaPlayer.create(this, uri);
-        bgm.start();
+
+    }
+
+    @Override
+    // 画面が表示される度に実行
+    protected void onResume() {
+        super.onResume();
+
+        bgmStart();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        bgmPause();
     }
 
     public void button1(View view) {
-        Toast.makeText(this, "ボタン1がおされたよ", Toast.LENGTH_SHORT).show();
+        //インテントの作成
+        Intent intent = new Intent(AppTitle.this, AppMain.class);
+        //遷移先の画面を起動
+        startActivity(intent);
     }
 
     public void button2(View view) {
-        Toast.makeText(this, "ボタン2がおされたよ", Toast.LENGTH_SHORT).show();
+        //インテントの作成
+        Intent intent = new Intent(AppTitle.this, AppLog.class);
+        //遷移先の画面を起動
+        startActivity(intent);
     }
 
     public void button3(View view) {
-        Toast.makeText(this, "ボタン3がおされたよ", Toast.LENGTH_SHORT).show();
         //インテントの作成
-        Intent intent = new Intent(this, AppStatus.class);
+        Intent intent = new Intent(AppTitle.this, AppStatus.class);
         //遷移先の画面を起動
         startActivity(intent);
 

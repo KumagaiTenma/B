@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.tenma.wolkapp2.AppTitle">
+    tools:context="com.example.tenma.wolkapp2.AppTitle"
+    android:background="#00ffff">
 
 
     <ImageView
@@ -14,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
 
-        app:srcCompat="@drawable/title_b" />
+        app:srcCompat="@drawable/apptitle_b" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -28,17 +29,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="#00000000"
-            app:srcCompat="@drawable/hazimeru"
-            android:onClick="button1"/>
+            android:background="@null"
+            app:srcCompat="@drawable/hazimeru2"
+            android:onClick="button1" />
         <ImageButton
             android:id="@+id/imageButton2"
             android:layout_width="wrap_content"
-            android:layout_gravity="center"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="#00000000"
-            app:srcCompat="@drawable/log"
+            android:background="@null"
+            app:srcCompat="@drawable/log2"
             android:onClick="button2"/>
         <ImageButton
             android:id="@+id/imageButton3"
@@ -46,8 +47,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:background="#00000000"
-            app:srcCompat="@drawable/status"
+            android:background="@null"
+            app:srcCompat="@drawable/status2"
             android:onClick="button3"/>
 
     </LinearLayout>
