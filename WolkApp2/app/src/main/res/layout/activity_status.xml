@@ -12,18 +12,16 @@
         android:id="@+id/imageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/back3"
+        app:srcCompat="@drawable/back"
         android:background="@null"
         android:layout_gravity="left"
-        android:onClick="back3"/>
+        android:onClick="back"/>
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="設定"
-        android:textSize="75dp"/>
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        app:srcCompat="@drawable/status" />
 
     <LinearLayout
         android:layout_width="wrap_content"
