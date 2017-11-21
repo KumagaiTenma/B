@@ -24,10 +24,26 @@
 
         <ImageView
             android:id="@+id/gifView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="350dp"
             android:layout_weight="1"
             android:background="@null" />
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="150dp"
+            android:layout_height="325dp"
+            app:srcCompat="@drawable/hukidasi"
+            android:layout_gravity="left"
+            android:layout_marginTop="10dp"/>
+
+        <ImageButton
+            android:id="@+id/imageButton4"
+            android:layout_width="wrap_content"
+            android:layout_height="350dp"
+            android:background="@null"
+            android:onClick="serif"
+            app:srcCompat="@drawable/main_button" />
 
     </FrameLayout>
 

@@ -11,6 +11,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.media.AudioManager;
+import android.media.Image;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.net.Uri;
@@ -30,7 +31,7 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import java.util.Locale;
 
 public class AppMain extends AppCompatActivity implements View.OnClickListener{
-
+    boolean nowMessageDisp;
     MediaPlayer bgm;
 
     public void back(View view) {
@@ -42,7 +43,7 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
         startActivity(intent);
     }
 
-    private ImageButton start,stop,reset;
+    private ImageButton start,stop;
 
     private TextView mStepCounterText;
     private SensorManager mSensorManager;
@@ -109,7 +110,7 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
 
         ImageView imageView = (ImageView) findViewById(R.id.gifView);
         GlideDrawableImageViewTarget target = new GlideDrawableImageViewTarget(imageView);
-        Glide.with(this).load(R.raw.main_back3).into(target);
+        Glide.with(this).load(R.raw.main_stop).into(target);
 
         //リソースファイルから再生
         bgm = MediaPlayer.create(this, R.raw.main_b);
@@ -142,6 +143,7 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
             editor.putBoolean("bootcompleted", false);
             editor.apply();
         }
+        nowMessageDisp = false;
     }
 
     protected void onResume() {
@@ -168,6 +170,7 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
         soundPool = new SoundPool(50, AudioManager.STREAM_MUSIC, 0);
         soundId = soundPool.load(getApplicationContext(), R.raw.click2, 1);
 
+        findViewById(R.id.imageView8).setVisibility(View.INVISIBLE);
     }
 
     boolean onstopflag = false;
@@ -329,6 +332,11 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                 //歩数表示を増加させる
                 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
                 steps = se.values[0] - dust;
+
+                //数字のフォント変えるところ
+
+
+
                 mStepCounterText.setText(String.format(Locale.US, "%d", (int)steps));
                 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
@@ -367,6 +375,9 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                     teststart.setImageResource(R.drawable.start2);
                     teststart = (ImageButton) findViewById(R.id.IBstop);
                     teststart.setImageResource(R.drawable.stop1);
+                    ImageView imageView = (ImageView) findViewById(R.id.gifView);
+                    GlideDrawableImageViewTarget target = new GlideDrawableImageViewTarget(imageView);
+                    Glide.with(this).load(R.raw.main_back3).into(target);
 
                     Log.v("testt", "-----スタートボタンが押されました-----");
                     Log.v("testt", "いらない歩数[dust(変化前)]" + dust);
@@ -402,7 +413,9 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                     teststart.setImageResource(R.drawable.start1);
                     teststart = (ImageButton) findViewById(R.id.IBstop);
                     teststart.setImageResource(R.drawable.stop2);
-                    ((ImageView) findViewById(R.id.gifView)).setImageResource(R.drawable.main_stop1);
+                    ImageView imageView = (ImageView) findViewById(R.id.gifView);
+                    GlideDrawableImageViewTarget target = new GlideDrawableImageViewTarget(imageView);
+                    Glide.with(this).load(R.raw.main_stop).into(target);
 
                     //歩数計算
                     stopfirst = se.values[0];
@@ -414,6 +427,17 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                 }
                 break;
 
+        }
+    }
+    public void serif(View view){
+        // セリフが出てなければ表示する
+        if( !nowMessageDisp ){
+            findViewById(R.id.imageView8).setVisibility(View.VISIBLE);
+            nowMessageDisp = true;
+        }
+        else{
+            findViewById(R.id.imageView8).setVisibility(View.INVISIBLE);
+            nowMessageDisp = false;
         }
     }
 }
