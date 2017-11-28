@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -30,9 +31,11 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 import java.util.Locale;
 
+
 public class AppMain extends AppCompatActivity implements View.OnClickListener{
     boolean nowMessageDisp;
     MediaPlayer bgm;
+
 
     public void back(View view) {
         //ボタンの音
@@ -41,6 +44,9 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
         Intent intent = new Intent(this, AppTitle.class);
         //遷移先の画面を起動
         startActivity(intent);
+
+        //Activityの終了
+        finishAndRemoveTask();
     }
 
     private ImageButton start,stop;
@@ -108,9 +114,10 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         ImageView imageView = (ImageView) findViewById(R.id.gifView);
         GlideDrawableImageViewTarget target = new GlideDrawableImageViewTarget(imageView);
-        Glide.with(this).load(R.raw.main_stop).into(target);
+        Glide.with(this).load(R.raw.main_stop2).into(target);
 
         //リソースファイルから再生
         bgm = MediaPlayer.create(this, R.raw.main_b);
@@ -332,11 +339,6 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                 //歩数表示を増加させる
                 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
                 steps = se.values[0] - dust;
-
-                //数字のフォント変えるところ
-
-
-
                 mStepCounterText.setText(String.format(Locale.US, "%d", (int)steps));
                 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
 
@@ -415,7 +417,7 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                     teststart.setImageResource(R.drawable.stop2);
                     ImageView imageView = (ImageView) findViewById(R.id.gifView);
                     GlideDrawableImageViewTarget target = new GlideDrawableImageViewTarget(imageView);
-                    Glide.with(this).load(R.raw.main_stop).into(target);
+                    Glide.with(this).load(R.raw.main_stop2).into(target);
 
                     //歩数計算
                     stopfirst = se.values[0];
