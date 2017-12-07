@@ -149,7 +149,7 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
         //歩数のフォント変える
         TextView text1 = (TextView)findViewById(R.id.pedometer);
         text1.setTypeface(Typeface.createFromAsset(getAssets(), "chibit.ttf"));
-        TextView text2 = (TextView)findViewById(R.id.pedometer);
+        TextView text2 = (TextView)findViewById(R.id.walk);
         text2.setTypeface(Typeface.createFromAsset(getAssets(), "GD-DOTFONT-DQ-TTF_008.ttf"));
 
         //メイン画面で表示するカロリーのフォントの色と透明度
@@ -191,13 +191,13 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
         //止まっている状態（デフォルト）
         ImageView imageView = (ImageView) findViewById(R.id.gifView);
         GlideDrawableImageViewTarget target = new GlideDrawableImageViewTarget(imageView);
-        Glide.with(this).load(R.raw.main_stop2).into(target);
+        Glide.with(this).load(R.raw.main_gif_stop).into(target);
         //歩いている状態
         if(pref.getBoolean("beforestartbutton", false)) {
 
             imageView = (ImageView) findViewById(R.id.gifView);
             target = new GlideDrawableImageViewTarget(imageView);
-            Glide.with(this).load(R.raw.main_back3).into(target);
+            Glide.with(this).load(R.raw.main_gif_walk).into(target);
         }
 
     }
@@ -460,7 +460,7 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                     teststart.setImageResource(R.drawable.stop1);
                     ImageView imageView = (ImageView) findViewById(R.id.gifView);
                     GlideDrawableImageViewTarget target = new GlideDrawableImageViewTarget(imageView);
-                    Glide.with(this).load(R.raw.main_back3).into(target);
+                    Glide.with(this).load(R.raw.main_gif_walk).into(target);
 
                     Log.v("testt", "-----スタートボタンが押されました-----");
                     Log.v("testt", "いらない歩数[dust(変化前)]" + dust);
@@ -502,7 +502,7 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                     teststart.setImageResource(R.drawable.stop2);
                     ImageView imageView = (ImageView) findViewById(R.id.gifView);
                     GlideDrawableImageViewTarget target = new GlideDrawableImageViewTarget(imageView);
-                    Glide.with(this).load(R.raw.main_stop2).into(target);
+                    Glide.with(this).load(R.raw.main_gif_stop).into(target);
 
                     //歩数計算
                     stopfirst = se.values[0];
