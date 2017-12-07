@@ -1,5 +1,8 @@
 package com.example.tenma.wolkapp2;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -42,13 +45,13 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
     SharedPreferences.Editor editor2;
     MediaPlayer bgm;
 
-
     SharedPreferences data;
     SharedPreferences.Editor dateEditor;
     SharedPreferences kiroku;
     SharedPreferences.Editor kirokuEditor;
 
     Cursor c;
+
 
     public void back(View view) {
         //ボタンの音
@@ -143,23 +146,18 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         //歩数のフォント変える
         TextView text1 = (TextView)findViewById(R.id.pedometer);
-        text1.setTypeface(Typeface.createFromAsset(getAssets(),
-                "chibit.ttf"));
+        text1.setTypeface(Typeface.createFromAsset(getAssets(), "chibit.ttf"));
+        TextView text2 = (TextView)findViewById(R.id.pedometer);
+        text2.setTypeface(Typeface.createFromAsset(getAssets(), "GD-DOTFONT-DQ-TTF_008.ttf"));
 
         //メイン画面で表示するカロリーのフォントの色と透明度
         TextView tv = (TextView) findViewById(R.id.textView);
         tv.setText("0");
+
         //フォントの色
         tv.setTextColor(Color.WHITE);
-
-
-        //////////////////////////////////////////////////////////////手直し箇所
-        ImageView imageView = (ImageView) findViewById(R.id.gifView);
-        GlideDrawableImageViewTarget target = new GlideDrawableImageViewTarget(imageView);
-        Glide.with(this).load(R.raw.main_stop2).into(target);
 
         //ジャイロセンサー起動　歩数計測スタート
         start = (ImageButton) findViewById(R.id.IBstart);
@@ -188,13 +186,24 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
             editor.apply();
         }
         nowMessageDisp = false;
+
+        //キャラクターの初期表示（歩いているか止まっているか）
+        //止まっている状態（デフォルト）
+        ImageView imageView = (ImageView) findViewById(R.id.gifView);
+        GlideDrawableImageViewTarget target = new GlideDrawableImageViewTarget(imageView);
+        Glide.with(this).load(R.raw.main_stop2).into(target);
+        //歩いている状態
+        if(pref.getBoolean("beforestartbutton", false)) {
+
+            imageView = (ImageView) findViewById(R.id.gifView);
+            target = new GlideDrawableImageViewTarget(imageView);
+            Glide.with(this).load(R.raw.main_back3).into(target);
+        }
+
     }
 
     protected void onResume() {
         super.onResume();
-
-
-
 
         //リソースファイルから再生
         bgm = MediaPlayer.create(this, R.raw.main_b);
@@ -244,6 +253,12 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
         bgm.release();
         bgm = null;
 
+        //スタートボタンが押された状態で終了した
+        SharedPreferences pref = getSharedPreferences("file", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean("beforestartbutton", true);
+        editor.apply();
+
         //onDestroy()時にonStop()が呼び出されてしまうのでflag処理
         if(!onstopflag) {
 
@@ -258,16 +273,23 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                 beforedust = -1;
             }
             //増やした数を再び保存
-            SharedPreferences pref = getSharedPreferences("file", MODE_PRIVATE);
-            SharedPreferences.Editor editor = pref.edit();
+            pref = getSharedPreferences("file", MODE_PRIVATE);
+            editor = pref.edit();
             editor.putFloat("beforedust", beforedust);
             editor.apply();
             Log.v("testt", "[beforedust]" + beforedust);
 
             //ストップの間に加算された歩数があり、終了した場合
             if(stopflag) {
-                Log.v("testt", "※ストップが押されてる状態");
+                Log.v("testt", "※ストップが押されてる状態でOnstop()");
                 beforestopfirst = stopfirst;
+
+                //スタートボタンが押されていない状態で終了した
+                pref = getSharedPreferences("file", MODE_PRIVATE);
+                editor = pref.edit();
+                editor.putBoolean("beforestartbutton", false);
+                editor.apply();
+
             }else {
                 beforestopfirst = -1;
             }
@@ -374,8 +396,9 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                 stopflag = true;
                 resetflag = true;
 
+                SharedPreferences pref = getSharedPreferences("file", MODE_PRIVATE);
                 //（起動2回目以降）スタートが押された状態で終了
-                if(beforedust > 0 && beforestopfirst < 0) {
+                if(pref.getBoolean("beforestartbutton", false)) {
                     startflag = true;
                     stopflag = false;
                     resetflag = true;
@@ -397,6 +420,8 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                 steps = se.values[0] - dust;
                 mStepCounterText.setText(String.format(Locale.US, "%d", (int)steps));
                 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+
+                sendNotification();
 
             }
             //ストップボタンが押されている時
@@ -549,6 +574,7 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
 
         }
     }
+
     public void serif(View view){
 
 
@@ -591,5 +617,28 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
             findViewById(R.id.textView).setVisibility(View.INVISIBLE);
             nowMessageDisp = false;
         }
+    }
+
+    private void sendNotification() {
+
+        Intent notificationIntent = new Intent(this, AppMain.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this,0,notificationIntent,0);
+
+        Notification.Builder builder = new Notification.Builder(this);
+
+        NotificationManager manager= (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+
+        builder.setSmallIcon(R.mipmap.aikon);
+        builder.setContentTitle("");
+
+        SharedPreferences pref = getSharedPreferences("file", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        builder.setContentText("歩数" + steps);
+        builder.setDefaults(Notification.PRIORITY_DEFAULT);
+        builder.setContentIntent(contentIntent);
+//        manager.flags = Notification.FLAG_ONGOING_EVENT; // 常駐
+
+        manager.notify(1,builder.build());
+
     }
 }
