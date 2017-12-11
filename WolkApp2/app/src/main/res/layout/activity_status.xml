@@ -39,21 +39,32 @@
                 android:onClick="back"
                 app:srcCompat="@drawable/button_modoru" />
 
-            <ImageView
-                android:id="@+id/imageView3"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/seibetu"
-                android:layout_marginTop="210dp"/>
+                android:orientation="horizontal"
+                android:layout_marginTop="250dp"
+                android:layout_gravity="center">
 
-            <Spinner
-                android:id="@+id/spinner3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:entries="@array/list3"
-                android:spinnerMode="dialog" />
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/seibetu" />
+
+                <Spinner
+                    android:id="@+id/spinner3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:entries="@array/list3"
+                    android:spinnerMode="dialog" />
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -63,21 +74,11 @@
 
                 <ImageView
                     android:id="@+id/imageView4"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_weight="1"
-                    app:srcCompat="@drawable/height" />
-
-            </LinearLayout>
-
-
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
+                    android:layout_weight="5"
+                    app:srcCompat="@drawable/status_high" />
 
                 <Spinner
                     android:id="@+id/spinner"
@@ -95,22 +96,23 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="5"
-                    app:srcCompat="@drawable/cm" />
+                    app:srcCompat="@drawable/ststus_cm" />
 
             </LinearLayout>
-
-            <ImageView
-                android:id="@+id/imageView6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/weight" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/status_weight" />
 
                 <Spinner
                     android:id="@+id/spinner2"
@@ -127,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/kg" />
+                    app:srcCompat="@drawable/status_kg" />
 
             </LinearLayout>
         </LinearLayout>
