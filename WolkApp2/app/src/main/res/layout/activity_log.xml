@@ -16,24 +16,10 @@
         android:background="@null"
         android:layout_gravity="left"
         android:onClick="back"/>
-    <TextView
-        android:id="@+id/textView8"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="カレンダー"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        tools:ignore="HardcodedText" />
 
     <!--<RelativeLayout-->
     <!--android:layout_width="wrap_content"-->
     <!--android:layout_height="wrap_content">-->
-
-    <CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginTop="16dp" />
 
 
     <!--</RelativeLayout>-->
@@ -53,5 +39,21 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textSize="10sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="カレンダー"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        tools:ignore="HardcodedText"
+        android:layout_marginTop="85dp"/>
+
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>

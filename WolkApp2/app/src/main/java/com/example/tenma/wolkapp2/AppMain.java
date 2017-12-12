@@ -41,14 +41,13 @@ import static android.R.attr.data;
 
 
 public class AppMain extends AppCompatActivity implements View.OnClickListener{
+
     boolean nowMessageDisp;
     SharedPreferences.Editor editor2;
     MediaPlayer bgm;
 
     SharedPreferences data;
     SharedPreferences.Editor dateEditor;
-    SharedPreferences kiroku;
-    SharedPreferences.Editor kirokuEditor;
 
     Cursor c;
 
@@ -133,14 +132,8 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                 //stepsの値が0より大きい時
                 if(se.values[0] - pref.getFloat("beforedust", 0) > 0) {
 
-                    //日付の取得
-                    Calendar cal = Calendar.getInstance();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-                    String strDate = sdf.format(cal.getTime());
-                    int intDate = Integer.parseInt(strDate);
-
-                    //SQLに日付(yyyymmdd)と歩数を入れる
-
+                    //データを入れる処理
+                    //dust更新
 
                 }
 
@@ -158,19 +151,29 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
         text1.setTypeface(Typeface.createFromAsset(getAssets(), "chibit.ttf"));
         TextView text2 = (TextView)findViewById(R.id.walk);
         text2.setTypeface(Typeface.createFromAsset(getAssets(), "GD-DOTFONT-DQ-TTF_008.ttf"));
+        TextView text3 = (TextView)findViewById(R.id.syouhi);
+        text3.setTypeface(Typeface.createFromAsset(getAssets(), "GD-DOTFONT-DQ-TTF_008.ttf"));
+        TextView text4 = (TextView)findViewById(R.id.main_kg);
+        text4.setTypeface(Typeface.createFromAsset(getAssets(), "chibit.ttf"));
+        TextView text5 = (TextView)findViewById(R.id.textView);
+        text5.setTypeface(Typeface.createFromAsset(getAssets(), "chibit.ttf"));
 
         //メイン画面で表示するカロリーのフォントの色と透明度
         TextView tv = (TextView) findViewById(R.id.textView);
         tv.setText("0");
+        TextView tv2 = (TextView) findViewById(R.id.syouhi);
+        TextView tv3 = (TextView) findViewById(R.id.main_kg);
 
         //フォントの色
         tv.setTextColor(Color.WHITE);
+        tv2.setTextColor(Color.WHITE);
+        tv3.setTextColor(Color.WHITE);
 
-        //ジャイロセンサー起動　歩数計測スタート
+        //スタートボタン
         start = (ImageButton) findViewById(R.id.IBstart);
         start.setOnClickListener(this);
 
-        //ジャイロセンサー停止　歩数計測ストップ
+        //ストップボタン
         stop = (ImageButton) findViewById(R.id.IBstop);
         stop.setOnClickListener(this);
 
@@ -184,9 +187,14 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
         //ストップの間に加算された歩数があり、終了した場合
         beforestopfirst = pref.getFloat("beforestopfirst", -1);
 
+        //android起動時の処理
         if(pref.getBoolean("bootcompleted", false)) {
 
             Log.v("testt", "Android起動！！！！！！！！！！！！！！！");
+
+            //Serviceを起動
+            Intent intent = new Intent(getApplication(), NotificationService.class);
+            startService(intent);
 
             SharedPreferences.Editor editor = pref.edit();
             editor.putBoolean("bootcompleted", false);
@@ -241,6 +249,8 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
 
         findViewById(R.id.imageView8).setVisibility(View.INVISIBLE);
         findViewById(R.id.textView).setVisibility(View.INVISIBLE);
+        findViewById(R.id.syouhi).setVisibility(View.INVISIBLE);
+        findViewById(R.id.main_kg).setVisibility(View.INVISIBLE);
     }
 
     boolean onstopflag = false;
@@ -336,7 +346,6 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
     //スタート・ストップ・リセットの状態
     boolean startflag = false;
     boolean stopflag = false;
-    boolean resetflag = false;
 
     //現在の歩数
     private float steps = 0;
@@ -404,14 +413,12 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                 //状態の初期化（ストップを押している状態）
                 startflag = false;
                 stopflag = true;
-                resetflag = true;
 
                 SharedPreferences pref = getSharedPreferences("file", MODE_PRIVATE);
                 //（起動2回目以降）スタートが押された状態で終了
                 if(pref.getBoolean("beforestartbutton", false)) {
                     startflag = true;
                     stopflag = false;
-                    resetflag = true;
 
                     teststart = (ImageButton) findViewById(R.id.IBstart);
                     teststart.setImageResource(R.drawable.main_kanban);
@@ -430,8 +437,6 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                 steps = se.values[0] - dust;
                 mStepCounterText.setText(String.format(Locale.US, "%d", (int)steps));
                 //wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
-
-                sendNotification();
 
             }
             //ストップボタンが押されている時
@@ -482,16 +487,24 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                     dust += stopsteps;  //不必要歩数
 
                     Log.v("testt", "stop中に増えた歩数[stopsteps]" + stopsteps + " = [センサ]" + se.values[0] + " - [stopfirst]" + stopfirst);
-
                     Log.v("testt", "いらない歩数[dust(変化後)]" + dust + " = [dust(変化前)]" + (dust - stopsteps) + " + [stopsteps]" + stopsteps);
-
                     Log.v("testt", "歩数[steps]" + steps + " = [センサ]" + se.values[0] + " - [dust(変化後)]" + dust);
-
                     Log.v("testt", "~~~スタートボタンが押されました[終了]~~~");
 
                     //状態変更
                     startflag = true;
                     stopflag = false;
+
+                    //dustとstartflagをNotificationServiceに渡す
+                    SharedPreferences pref = getSharedPreferences("file", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putFloat("runningdust", dust);
+                    editor.putBoolean("runningstartflag", startflag);
+                    editor.apply();
+
+                    //Serviceを起動
+                    Intent intent = new Intent(getApplication(), NotificationService.class);
+                    startService(intent);
 
                 }
                 break;
@@ -502,7 +515,6 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                 if(startflag) {
                     //ボタンの音
                     soundPool.play(soundId, 1f, 1f, 0, 0, 1);    //音の大きさは0fから1fで調整できる
-                    //Toast.makeText(this, "ストップ！", Toast.LENGTH_SHORT).show();
 
                     //スタート・ストップ・リセットボタンの画像変更
                     teststart = (ImageButton) findViewById(R.id.IBstart);
@@ -521,6 +533,16 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
                     //状態変更
                     startflag = false;
                     stopflag = true;
+
+                    //startflagをNotificationServiceに渡す
+                    SharedPreferences pref = getSharedPreferences("file", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putBoolean("runningstartflag", startflag);
+                    editor.apply();
+
+                    //Serviceを停止
+                    Intent intent = new Intent(getApplication(), NotificationService.class);
+                    stopService(intent);
 
                 }
                 break;
@@ -612,6 +634,8 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
         if( !nowMessageDisp ){
             findViewById(R.id.imageView8).setVisibility(View.VISIBLE);
             findViewById(R.id.textView).setVisibility(View.VISIBLE);
+            findViewById(R.id.syouhi).setVisibility(View.VISIBLE);
+            findViewById(R.id.main_kg).setVisibility(View.VISIBLE);
             nowMessageDisp = true;
             // SQL文を実行してデータを取得
             try {
@@ -631,30 +655,10 @@ public class AppMain extends AppCompatActivity implements View.OnClickListener{
         else{
             findViewById(R.id.imageView8).setVisibility(View.INVISIBLE);
             findViewById(R.id.textView).setVisibility(View.INVISIBLE);
+            findViewById(R.id.syouhi).setVisibility(View.INVISIBLE);
+            findViewById(R.id.main_kg).setVisibility(View.INVISIBLE);
             nowMessageDisp = false;
         }
     }
 
-    private void sendNotification() {
-
-        Intent notificationIntent = new Intent(this, AppMain.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this,0,notificationIntent,0);
-
-        Notification.Builder builder = new Notification.Builder(this);
-
-        NotificationManager manager= (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-
-        builder.setSmallIcon(R.mipmap.aikon);
-        builder.setContentTitle("");
-
-        SharedPreferences pref = getSharedPreferences("file", MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        builder.setContentText("歩数" + steps);
-        builder.setDefaults(Notification.PRIORITY_DEFAULT);
-        builder.setContentIntent(contentIntent);
-//        manager.flags = Notification.FLAG_ONGOING_EVENT; // 常駐
-
-        manager.notify(1,builder.build());
-
-    }
 }
